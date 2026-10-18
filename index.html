@@ -1,1 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arithmetic Progression - Class 10</title>
+<style>
+:root{--bg:#f1f5ff;--card:#fff;--ink:#1f2a44;--pri:#4f46e5;--ok:#16a34a;--bad:#dc2626;--hi:#fff4c2;--soft:#e0e7ff}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;font-size:22px;line-height:1.65;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:18px 16px;text-align:center}
+header h1{margin:0;font-size:30px}
+header p{margin:4px 0 0;font-size:18px;opacity:.9}
+#bar{height:8px;background:#c7d2fe}
+#bar div{height:100%;width:0;background:#22c55e;transition:width .5s}
+nav{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fff;position:sticky;top:0;z-index:5;box-shadow:0 2px 6px #0001}
+nav button{flex:0 0 auto;border:2px solid var(--pri);background:#fff;color:var(--pri);border-radius:20px;padding:6px 14px;font-size:17px;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff}
+main{max-width:860px;margin:0 auto;padding:14px}
+.card{background:var(--card);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 3px 12px #0001;animation:up .6s both}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+h2{color:var(--pri);margin:6px 0 10px;font-size:30px}
+h3{margin:4px 0 8px;font-size:25px;color:#7c3aed}
+.m{display:block;background:var(--hi);border-left:6px solid #f59e0b;padding:6px 12px;margin:6px 0;border-radius:8px;font-size:20px}
+.key{background:var(--soft);border:2px dashed var(--pri);border-radius:12px;padding:10px 14px;text-align:center;font-size:26px;font-weight:700;margin:10px 0}
+.ex{border:2px solid #c7d2fe;border-radius:12px;padding:12px;margin:12px 0;background:#fafbff}
+.ex .q{font-weight:700;margin-bottom:6px}
+.steps p{margin:6px 0;padding:6px 10px;background:#ecfdf5;border-radius:8px;display:none;animation:up .4s both}
+.steps p.show{display:block}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:20px;cursor:pointer;margin:6px 4px 6px 0}
+.btn.alt{background:#0ea5e9}
+.btn:disabled{opacity:.4}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.box{min-width:58px;padding:8px 10px;border-radius:10px;background:#4f46e5;color:#fff;text-align:center;font-weight:700;animation:pop .5s both}
+.arrow{color:#f59e0b;font-weight:700;font-size:18px;animation:pop .5s both}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+input[type=number],input[type=text]{font-size:20px;padding:6px 10px;border:2px solid #c7d2fe;border-radius:8px;width:110px}
+input[type=text]{width:100%;max-width:420px}
+input[type=range]{width:200px}
+.out{margin-top:8px;padding:10px;background:#ecfdf5;border-radius:10px;min-height:20px}
+.qz{border-top:4px solid var(--pri);margin-top:20px;padding-top:10px}
+.qq{margin:16px 0}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 14px;font-size:20px;border:2px solid #c7d2fe;background:#fff;border-radius:10px;cursor:pointer}
+.opt.ok{background:#dcfce7;border-color:var(--ok)}
+.opt.bad{background:#fee2e2;border-color:var(--bad)}
+.why{display:none;margin-top:6px;padding:8px 12px;background:var(--hi);border-radius:8px;font-size:19px}
+.score{font-weight:700;color:var(--pri)}
+.pair{animation:pop .4s both;display:inline-block;margin:3px;padding:4px 10px;background:#fde68a;border-radius:8px}
+.foot{display:flex;justify-content:space-between;margin:20px 0 40px}
+table{border-collapse:collapse;width:100%;font-size:20px}
+td,th{border:2px solid #c7d2fe;padding:8px;text-align:center}
+th{background:var(--soft)}
+.warn{background:#fee2e2;border-left:6px solid var(--bad);padding:8px 12px;border-radius:8px;margin:8px 0}
+</style>
+</head>
+<body>
+<header><h1>Arithmetic Progression</h1><p>Class 10 Maths &bull; Learn step by step, then practise</p></header>
+<div id="bar"><div></div></div>
+<nav id="nav"></nav>
+<main id="main"></main>
 
+<script>
+/* ---------- helpers ---------- */
+function ex(q, steps){
+  return '<div class="ex"><div class="q">Example: '+q+'</div><div class="steps">'+
+    steps.map(function(s){return '<p>'+s+'</p>'}).join('')+
+    '</div><button class="btn" onclick="nextStep(this)">Show next step &#9654;</button></div>';
+}
+function nextStep(b){
+  var ps=b.parentNode.querySelectorAll('.steps p:not(.show)');
+  if(ps.length){ps[0].classList.add('show');}
+  if(ps.length<=1){b.style.display='none';}
+}
+function card(h){return '<div class="card">'+h+'</div>';}
+
+/* ---------- content ---------- */
+var S=[];
+
+/* 1 */
+S.push({title:'1. What is an AP?',
+learn:[
+card('<h2>What is an Arithmetic Progression?</h2>'+
+'<p>Look at the table of 5: <b>5, 10, 15, 20, 25 ...</b> Every number is 5 more than the one before it.</p>'+
+'<p>A list of numbers in a fixed order is called a <b>sequence</b> <span class="m">Sequence means numbers written one after another in a definite order, like students standing in a line. Each number is called a <b>term</b>.</span></p>'+
+'<p>Now look at more examples from real life:</p>'+
+'<p>&bull; Rungs of a ladder: 30 cm, 55 cm, 80 cm, 105 cm... (each rung is 25 cm higher)<br>&bull; Days of a month on every Monday: 3, 10, 17, 24 (each 7 more)<br>&bull; Money left in a piggy bank if you spend Rs 10 daily: 100, 90, 80, 70 (each 10 less)</p>'+
+'<div class="key">AP = a list of numbers in which the same number is added (or subtracted) every time</div>'+
+'<p>That "same number" is called the <b>common difference</b> <span class="m">Common difference means the fixed gap between one term and the next. "Common" = same for all, "difference" = gap.</span></p>'),
+card('<h3>Play with it: build your own AP</h3><p>Move the sliders and watch the AP grow.</p><div class="w" data-w="builder"></div>'),
+card('<h3>Important: what is NOT an AP?</h3><p>1, 4, 9, 16 is <b>not</b> an AP. The gaps are 3, 5, 7 which keep changing. In an AP the gap must stay <b>exactly the same</b> from start to end.</p>')
+],
+quiz:[
+{q:'Which of these is an AP?',o:['3, 6, 9, 12','1, 2, 4, 8','1, 4, 9, 16','2, 3, 5, 7'],a:0,w:'Gap is +3 every time.'},
+{q:'Next term of 7, 12, 17, 22, ... is',o:['25','27','29','32'],a:1,w:'The gap is 5, so 22 + 5 = 27.'},
+{q:'Which is NOT an AP?',o:['10, 20, 30, 40','5, 5, 5, 5','1, 3, 6, 10','9, 7, 5, 3'],a:2,w:'Gaps are 2, 3, 4: not the same, so not an AP.'},
+{q:'In an AP, the fixed gap between terms is called',o:['Sum','Common difference','Product','Term'],a:1,w:'Common difference is the same gap between consecutive terms.'}
+]});
+
+/* 2 */
+S.push({title:'2. Key terms',
+learn:[
+card('<h2>The language of AP</h2>'+
+'<p><b>First term (a)</b>: the very first number of the AP. <span class="m">We use a letter "a" instead of writing "first term" every time, just like using a short nickname.</span></p>'+
+'<p><b>Common difference (d)</b>: the fixed gap. Find it by <b>second term &minus; first term</b>.</p>'+
+'<p><b>nth term (a<sub>n</sub>)</b>: the term at position n. a<sub>1</sub> is the 1st term, a<sub>2</sub> is the 2nd, a<sub>10</sub> is the 10th. <span class="m">The small number below the letter is just a position number, like a roll number.</span></p>'+
+'<p><b>Finite AP</b>: has a last term (2, 4, 6, 8, 10). <b>Infinite AP</b>: goes on forever (2, 4, 6, 8, ...). <span class="m">Finite = ends somewhere. Infinite = never ends. The last term of a finite AP is written as l.</span></p>'+
+'<div class="key">d = a<sub>2</sub> &minus; a<sub>1</sub> = a<sub>3</sub> &minus; a<sub>2</sub> = ...</div>'),
+card('<h3>Three kinds of AP</h3><table><tr><th>d</th><th>AP is</th><th>Example</th></tr>'+
+'<tr><td>d &gt; 0 (positive)</td><td>Increasing &#8599;</td><td>2, 5, 8, 11</td></tr>'+
+'<tr><td>d &lt; 0 (negative)</td><td>Decreasing &#8600;</td><td>20, 15, 10, 5</td></tr>'+
+'<tr><td>d = 0</td><td>Constant (same number)</td><td>7, 7, 7, 7</td></tr></table>'),
+card(ex('Find a and d of the AP 12, 9, 6, 3, ...',[
+'First term a = <b>12</b>.',
+'d = 9 &minus; 12 = <b>&minus;3</b>.',
+'Check: 6 &minus; 9 = &minus;3 and 3 &minus; 6 = &minus;3. Same, so it is an AP. d is negative, so the AP is decreasing.']))
+],
+quiz:[
+{q:'a and d of 12, 9, 6, 3 are',o:['a=12, d=3','a=12, d=-3','a=3, d=-3','a=9, d=3'],a:1,w:'a = 12 and d = 9 - 12 = -3.'},
+{q:'d of 0.6, 1.7, 2.8, 3.9 is',o:['1.1','1.2','0.6','1.0'],a:0,w:'1.7 - 0.6 = 1.1.'},
+{q:'The AP 5, 5, 5, 5 has d =',o:['5','1','0','-5'],a:2,w:'Every term is the same, so the gap is 0.'},
+{q:'The AP 50, 40, 30, ... is',o:['Increasing','Decreasing','Constant','Not an AP'],a:1,w:'d = -10 which is negative, so decreasing.'}
+]});
+
+/* 3 */
+S.push({title:'3. Is it an AP?',
+learn:[
+card('<h2>How to check if a list is an AP</h2>'+
+'<p><b>Rule:</b> Find the difference of every pair of neighbours. If <b>all differences are equal</b>, it is an AP. If even one is different, it is not.</p>'+
+'<div class="key">a<sub>2</sub>&minus;a<sub>1</sub> = a<sub>3</sub>&minus;a<sub>2</sub> = a<sub>4</sub>&minus;a<sub>3</sub></div>'),
+card(ex('Is 2, 5, 8, 11 an AP?',['5 &minus; 2 = 3','8 &minus; 5 = 3','11 &minus; 8 = 3','All equal, so <b>YES</b>, an AP with d = 3.'])+
+ex('Is 1, 4, 9, 16 an AP?',['4 &minus; 1 = 3','9 &minus; 4 = 5','3 is not equal to 5, so <b>NO</b>, not an AP.'])+
+ex('Is &radic;2, &radic;8, &radic;18, &radic;32 an AP?',['Simplify: &radic;8 = 2&radic;2, &radic;18 = 3&radic;2, &radic;32 = 4&radic;2.','List becomes &radic;2, 2&radic;2, 3&radic;2, 4&radic;2.','d = &radic;2 each time, so <b>YES</b>, an AP.'])),
+card('<h3>Try it yourself</h3><p>Type numbers separated by commas.</p><input type="text" id="chk" value="3, 7, 11, 15"> <button class="btn" onclick="chkAP()">Check</button><div class="out" id="chkout"></div>')
+],
+quiz:[
+{q:'Is 2, 4, 8, 16 an AP?',o:['Yes, d=2','Yes, d=4','No','Yes, d=8'],a:2,w:'Differences are 2, 4, 8: not equal.'},
+{q:'Is -1, -1, -1, -1 an AP?',o:['No','Yes, d=0','Yes, d=-1','Yes, d=1'],a:1,w:'All differences are 0, so it is an AP with d = 0.'},
+{q:'Is 1/2, 1, 3/2, 2 an AP?',o:['Yes, d=1/2','No','Yes, d=1','Yes, d=2'],a:0,w:'Each gap is 1/2.'},
+{q:'Is 0, 2, 6, 12 an AP?',o:['Yes','No, gaps are 2, 4, 6','No, gaps are 2, 3, 4','Yes, d = 2'],a:1,w:'2-0=2, 6-2=4, 12-6=6.'}
+]});
+
+/* 4 */
+S.push({title:'4. nth term',
+learn:[
+card('<h2>Finding any term: the nth term formula</h2>'+
+'<p>Suppose first term = a and common difference = d. Let us build the terms:</p>'+
+'<p>a<sub>1</sub> = a<br>a<sub>2</sub> = a + d (added d once)<br>a<sub>3</sub> = a + 2d (added d twice)<br>a<sub>4</sub> = a + 3d (added d three times)</p>'+
+'<p>See the pattern? For the nth term, we add d exactly <b>(n &minus; 1)</b> times.</p>'+
+'<div class="key">a<sub>n</sub> = a + (n &minus; 1) d</div>'+
+'<span class="m">a<sub>n</sub> = the term you want, a = first term, n = its position number, d = common difference.</span>'),
+card(ex('Find the 10th term of 2, 7, 12, ...',[
+'a = 2, d = 7 &minus; 2 = 5, n = 10.',
+'a<sub>10</sub> = 2 + (10 &minus; 1) &times; 5',
+'= 2 + 9 &times; 5 = 2 + 45',
+'<b>a<sub>10</sub> = 47</b>'])+
+ex('Find the 31st term of 11, 8, 5, ...',[
+'a = 11, d = 8 &minus; 11 = &minus;3, n = 31.',
+'a<sub>31</sub> = 11 + 30 &times; (&minus;3)',
+'= 11 &minus; 90',
+'<b>a<sub>31</sub> = &minus;79</b>'])),
+card('<h3>Calculator: find a<sub>n</sub> and check if a number is a term</h3>'+
+'<div class="row">a = <input type="number" id="ca" value="5"> d = <input type="number" id="cd" value="6"></div>'+
+'<div class="row">n = <input type="number" id="cn" value="10"> <button class="btn" onclick="calcN()">Find a<sub>n</sub></button></div>'+
+'<div class="row">Is <input type="number" id="cx" value="301"> a term? <button class="btn alt" onclick="calcT()">Check</button></div>'+
+'<div class="out" id="cout"></div>')
+],
+quiz:[
+{q:'10th term of 2, 7, 12, ... is',o:['42','47','52','37'],a:1,w:'2 + 9x5 = 47.'},
+{q:'20th term of 3, 5, 7, ... is',o:['41','43','39','45'],a:0,w:'3 + 19x2 = 41.'},
+{q:'a = -5, d = -3. Then a12 =',o:['-38','-36','-41','-28'],a:0,w:'-5 + 11x(-3) = -5 - 33 = -38.'},
+{q:'In a(n) = a + (n-1)d, the number (n-1) tells us',o:['how many terms in all','how many times d is added','the sum','the last term'],a:1,w:'To reach the nth term from the first, d is added (n-1) times.'}
+]});
+
+/* 5 */
+S.push({title:'5. Which term / find AP',
+learn:[
+card('<h2>Which term is a given number?</h2>'+
+'<p>Put the number in place of a<sub>n</sub>, then solve for n. <b>n must be a whole positive number.</b> <span class="m">Whole number means 1, 2, 3 ... with no fraction or decimal. Position 4.5 does not exist, just like there is no 4.5th student in a line.</span></p>'),
+card(ex('Which term of 3, 8, 13, 18, ... is 78?',[
+'a = 3, d = 5, a<sub>n</sub> = 78.',
+'78 = 3 + (n &minus; 1) &times; 5',
+'75 = (n &minus; 1) &times; 5',
+'n &minus; 1 = 15',
+'<b>n = 16</b>, so 78 is the 16th term.'])+
+ex('Is 301 a term of 5, 11, 17, 23, ...?',[
+'a = 5, d = 6. Suppose 301 = a<sub>n</sub>.',
+'301 = 5 + (n &minus; 1) &times; 6',
+'296 = (n &minus; 1) &times; 6',
+'n &minus; 1 = 296/6 = 49.33',
+'n is not a whole number, so <b>301 is NOT a term</b>.'])),
+card('<h2>Finding the AP from given terms</h2>'+
+ex('If a<sub>3</sub> = 5 and a<sub>7</sub> = 9, find the AP.',[
+'a<sub>3</sub> = a + 2d = 5 ... (i)',
+'a<sub>7</sub> = a + 6d = 9 ... (ii)',
+'Subtract (i) from (ii): 4d = 4, so <b>d = 1</b>.',
+'Put d = 1 in (i): a + 2 = 5, so <b>a = 3</b>.',
+'The AP is <b>3, 4, 5, 6, ...</b>'])),
+card('<h2>Counting terms in a finite AP</h2>'+
+ex('How many terms are in 4, 7, 10, ..., 40?',[
+'a = 4, d = 3, last term = 40.',
+'40 = 4 + (n &minus; 1) &times; 3',
+'36 = (n &minus; 1) &times; 3, so n &minus; 1 = 12',
+'<b>n = 13 terms</b>.'])+
+ex('Find the 20th term from the LAST of 3, 8, 13, ..., 253.',[
+'Reverse the AP: it starts at 253 and the difference becomes &minus;5.',
+'a = 253, d = &minus;5, n = 20.',
+'a<sub>20</sub> = 253 + 19 &times; (&minus;5) = 253 &minus; 95',
+'<b>= 158</b>.']))
+],
+quiz:[
+{q:'Which term of 3, 8, 13, ... is 78?',o:['15th','16th','17th','14th'],a:1,w:'78 = 3 + (n-1)5 gives n = 16.'},
+{q:'a = 2 and a11 = 32. Then d =',o:['2','3','4','30'],a:1,w:'32 = 2 + 10d, so d = 3.'},
+{q:'a3 = 5 and a7 = 9. The first term a is',o:['1','2','3','4'],a:2,w:'4d = 4, d = 1, then a + 2 = 5 gives a = 3.'},
+{q:'Number of terms in 4, 7, 10, ..., 40 is',o:['12','13','14','11'],a:1,w:'40 = 4 + (n-1)3 gives n = 13.'}
+]});
+
+/* 6 */
+S.push({title:'6. Sum of n terms',
+learn:[
+card('<h2>Adding the terms of an AP</h2>'+
+'<p>The <b>sum</b> of the first n terms is written S<sub>n</sub>. <span class="m">S<sub>n</sub> just means "add up the first n terms of the AP".</span></p>'+
+'<p>Story time: a teacher once asked the young Gauss to add 1 + 2 + 3 + ... + 100. He did it in seconds. Press the button to see his trick.</p>'+
+'<div class="w" data-w="gauss"></div>'),
+card('<h3>The trick, explained</h3>'+
+'<p>Pair the first and last terms: each pair has the <b>same sum</b> (first + last). Number of pairs = n/2.</p>'+
+'<div class="key">S<sub>n</sub> = n/2 &times; (a + l)</div>'+
+'<p>Use this when you <b>know the last term l</b>.</p>'+
+'<p>If last term is not known, replace l by a + (n&minus;1)d:</p>'+
+'<div class="key">S<sub>n</sub> = n/2 [ 2a + (n &minus; 1) d ]</div>'+
+'<p>Use this when you <b>know a, d and n</b>.</p>'),
+card(ex('Find the sum of the first 22 terms of 8, 3, &minus;2, ...',[
+'a = 8, d = 3 &minus; 8 = &minus;5, n = 22.',
+'S<sub>22</sub> = 22/2 [ 2(8) + 21 &times; (&minus;5) ]',
+'= 11 [ 16 &minus; 105 ] = 11 &times; (&minus;89)',
+'<b>S<sub>22</sub> = &minus;979</b>'])+
+ex('Find the sum of 2 + 7 + 12 + ... + 34.',[
+'a = 2, d = 5, l = 34. First find n.',
+'34 = 2 + (n &minus; 1) &times; 5, so 32 = 5(n &minus; 1)... check: 34 &minus; 2 = 32 is not a multiple of 5, so use the 7th term idea carefully: this list must end at 32 or 37. Take the corrected AP 2, 7, 12, ..., 32.',
+'32 = 2 + (n &minus; 1) &times; 5, so n &minus; 1 = 6, n = 7.',
+'S<sub>7</sub> = 7/2 (2 + 32) = 7/2 &times; 34',
+'<b>= 119</b>.']))
+,
+card('<h3>Special sums to remember</h3>'+
+'<p>&bull; Sum of first n natural numbers: <b>n(n+1)/2</b> (for n = 100 this gives 5050)<br>'+
+'&bull; Sum of first n odd numbers: <b>n<sup>2</sup></b> (1 + 3 + 5 + 7 = 16)<br>'+
+'&bull; Sum of first n even numbers: <b>n(n+1)</b></p>'+
+ex('Find the sum of the first 15 multiples of 8.',[
+'AP: 8, 16, 24, ... so a = 8, d = 8, n = 15.',
+'S<sub>15</sub> = 15/2 [ 16 + 14 &times; 8 ] = 15/2 &times; 128',
+'<b>= 960</b>.']))
+],
+quiz:[
+{q:'Sum of the first 10 natural numbers is',o:['45','55','50','110'],a:1,w:'10 x 11 / 2 = 55.'},
+{q:'Sum of the first 20 odd numbers is',o:['200','400','420','210'],a:1,w:'Sum of first n odd numbers = n squared = 400.'},
+{q:'Sum of first 10 terms of 3, 7, 11, ... is',o:['210','200','220','190'],a:0,w:'10/2 [6 + 9x4] = 5 x 42 = 210.'},
+{q:'Sum of 5 + 10 + 15 + ... + 50 is',o:['250','275','300','255'],a:1,w:'n = 10, S = 10/2 (5 + 50) = 275.'},
+{q:'Which formula do you use when the LAST term is known?',o:['n/2 (a + l)','n(n-1)','a + (n-1)d','2a + d'],a:0,w:'S = n/2 (a + l) uses first and last term.'}
+]});
+
+/* 7 */
+S.push({title:'7. Sn, an & special cases',
+learn:[
+card('<h2>Getting a term from the sum</h2>'+
+'<p>The sum of n terms minus the sum of (n &minus; 1) terms leaves only the nth term. <span class="m">Think of it as: total marks of 5 subjects minus total marks of 4 subjects = marks of the 5th subject.</span></p>'+
+'<div class="key">a<sub>n</sub> = S<sub>n</sub> &minus; S<sub>n&minus;1</sub></div>'+
+'<p>Also, the first term a<sub>1</sub> = S<sub>1</sub>.</p>'),
+card(ex('If S<sub>n</sub> = 4n &minus; n<sup>2</sup>, find the AP.',[
+'a<sub>1</sub> = S<sub>1</sub> = 4(1) &minus; 1 = 3.',
+'S<sub>2</sub> = 8 &minus; 4 = 4, so a<sub>2</sub> = S<sub>2</sub> &minus; S<sub>1</sub> = 4 &minus; 3 = 1.',
+'d = 1 &minus; 3 = &minus;2.',
+'The AP is <b>3, 1, &minus;1, &minus;3, ...</b>'])+
+ex('If S<sub>n</sub> = n<sup>2</sup>, find a<sub>5</sub>.',[
+'a<sub>5</sub> = S<sub>5</sub> &minus; S<sub>4</sub> = 25 &minus; 16',
+'<b>a<sub>5</sub> = 9</b>.'])),
+card('<h2>Smart trick: choosing terms of an AP</h2>'+
+'<p>When the question gives a <b>sum</b> of 3 or 4 numbers in AP, assume them like this so that d cancels out in the sum:</p>'+
+'<table><tr><th>Numbers</th><th>Take as</th></tr>'+
+'<tr><td>3 numbers</td><td>a &minus; d, a, a + d</td></tr>'+
+'<tr><td>4 numbers</td><td>a &minus; 3d, a &minus; d, a + d, a + 3d</td></tr>'+
+'<tr><td>5 numbers</td><td>a &minus; 2d, a &minus; d, a, a + d, a + 2d</td></tr></table>'+
+ex('Three numbers are in AP. Their sum is 21 and product is 231. Find them.',[
+'Take the numbers as a &minus; d, a, a + d.',
+'Sum: 3a = 21, so <b>a = 7</b>.',
+'Product: (7 &minus; d)(7)(7 + d) = 231, so 49 &minus; d<sup>2</sup> = 33.',
+'d<sup>2</sup> = 16, so d = 4 or &minus;4.',
+'Numbers: <b>3, 7, 11</b> (or 11, 7, 3).']))
+],
+quiz:[
+{q:'a(n) = ?',o:['S(n) + S(n-1)','S(n) - S(n-1)','S(n) x S(n-1)','S(n) / n'],a:1,w:'Total of n terms minus total of (n-1) terms leaves the nth term.'},
+{q:'If S(n) = n squared, then a(5) =',o:['25','16','9','11'],a:2,w:'25 - 16 = 9.'},
+{q:'Three numbers in AP have sum 24. The middle number is',o:['6','8','12','7'],a:1,w:'(a-d)+a+(a+d) = 3a = 24, so a = 8.'},
+{q:'When 4 numbers are taken as a-3d, a-d, a+d, a+3d, the common difference of this AP is',o:['d','2d','3d','4d'],a:1,w:'(a-d) - (a-3d) = 2d.'}
+]});
+
+/* 8 */
+S.push({title:'8. Word problems',
+learn:[
+card('<h2>How to solve a word problem</h2>'+
+'<p><b>Step 1:</b> Read and spot the pattern (same amount added or removed each time).<br>'+
+'<b>Step 2:</b> Write a, d and n.<br>'+
+'<b>Step 3:</b> Decide: asked for ONE term (use a<sub>n</sub>) or a TOTAL (use S<sub>n</sub>)?<br>'+
+'<b>Step 4:</b> Put values in the formula and solve.<br>'+
+'<b>Step 5:</b> Write the answer with units (Rs, cm, seats).</p>'),
+card(ex('An auditorium has 20 rows. The first row has 18 seats and each next row has 2 more. How many seats are in the last row and in the whole hall?',[
+'a = 18, d = 2, n = 20.',
+'Last row: a<sub>20</sub> = 18 + 19 &times; 2 = <b>56 seats</b>.',
+'Total seats: S<sub>20</sub> = 20/2 (18 + 56) = 10 &times; 74',
+'<b>= 740 seats</b>.'])+
+ex('Reena saves Rs 100 in month 1, and Rs 20 more every month than the last. How much will she save in 12 months?',[
+'a = 100, d = 20, n = 12 (total is asked, so use S<sub>n</sub>).',
+'S<sub>12</sub> = 12/2 [ 2(100) + 11 &times; 20 ]',
+'= 6 [ 200 + 220 ] = 6 &times; 420',
+'<b>= Rs 2520</b>.'])+
+ex('Rohan\'s salary is Rs 30000 in year 1 and rises by Rs 2000 every year. What is his salary in the 10th year?',[
+'a = 30000, d = 2000, n = 10 (one term is asked, so use a<sub>n</sub>).',
+'a<sub>10</sub> = 30000 + 9 &times; 2000',
+'<b>= Rs 48000</b>.'])),
+card('<h3>Memory tip</h3><p>One value (salary in 10th year, last row) &rarr; <b>a<sub>n</sub></b>.<br>Total / altogether / in all (total savings, total seats) &rarr; <b>S<sub>n</sub></b>.</p>')
+],
+quiz:[
+{q:'Hall has 15 rows, first row 20 seats, each next row 3 more. Seats in the last row?',o:['62','59','65','60'],a:0,w:'20 + 14x3 = 62.'},
+{q:'Saves Rs 10 on day 1 and Rs 2 more each day. Saving on day 15?',o:['38','40','36','30'],a:0,w:'10 + 14x2 = 38.'},
+{q:'Total saved in those 15 days?',o:['360','380','350','400'],a:0,w:'15/2 [20 + 28] = 15/2 x 48 = 360.'},
+{q:'Salary Rs 20000, rises Rs 1000 yearly. Salary in year 5?',o:['24000','25000','23000','21000'],a:0,w:'20000 + 4x1000 = 24000.'},
+{q:'"Total in all" in a question tells you to use',o:['a(n)','S(n)','d only','a only'],a:1,w:'Total means sum, so use S(n).'}
+]});
+
+/* 9 */
+S.push({title:'9. Board special',
+learn:[
+card('<h2>Formula sheet</h2><table>'+
+'<tr><th>What</th><th>Formula</th></tr>'+
+'<tr><td>Common difference</td><td>d = a<sub>2</sub> &minus; a<sub>1</sub></td></tr>'+
+'<tr><td>nth term</td><td>a<sub>n</sub> = a + (n&minus;1)d</td></tr>'+
+'<tr><td>nth term from last</td><td>l &minus; (n&minus;1)d</td></tr>'+
+'<tr><td>Sum (a, d, n known)</td><td>S<sub>n</sub> = n/2 [2a + (n&minus;1)d]</td></tr>'+
+'<tr><td>Sum (a, l, n known)</td><td>S<sub>n</sub> = n/2 (a + l)</td></tr>'+
+'<tr><td>Term from sum</td><td>a<sub>n</sub> = S<sub>n</sub> &minus; S<sub>n&minus;1</sub></td></tr>'+
+'<tr><td>Number of terms</td><td>n = (l &minus; a)/d + 1</td></tr></table>'),
+card('<h2>Common mistakes to avoid</h2>'+
+'<div class="warn">1. Writing d = a<sub>1</sub> &minus; a<sub>2</sub>. Always do <b>later &minus; earlier</b>.</div>'+
+'<div class="warn">2. Using n instead of (n &minus; 1) in a<sub>n</sub> = a + (n&minus;1)d.</div>'+
+'<div class="warn">3. Forgetting the minus sign when d is negative. Use brackets: 11 + 30 &times; (&minus;3).</div>'+
+'<div class="warn">4. Accepting a fractional n. Position must be a whole positive number.</div>'+
+'<div class="warn">5. Using S<sub>n</sub> when only one term is asked, or the opposite.</div>'),
+card('<h2>How marks come in the board paper</h2>'+
+'<p>&bull; <b>1 mark:</b> find d, find next term, quick a<sub>n</sub><br>'+
+'&bull; <b>2 marks:</b> is it an AP, which term, number of terms<br>'+
+'&bull; <b>3 marks:</b> find AP from two terms, sum of n terms<br>'+
+'&bull; <b>4 marks:</b> word problems, S<sub>n</sub> to AP, 3 numbers in AP<br>'+
+'Always write: Given, Formula, Substitution, Answer. Steps carry marks!</p>')
+],
+quiz:[
+{q:'To find d, we do',o:['earlier - later','later - earlier','first + second','first x second'],a:1,w:'d = a2 - a1.'},
+{q:'20th term from the last of an AP with last term 253 and d = 5 is',o:['253 - 19x5 = 158','253 + 19x5','253 - 20x5','253 + 20x5'],a:0,w:'From the last, the difference is -d, so 253 + 19x(-5) = 158.'},
+{q:'Sum of first 100 natural numbers is',o:['5000','5050','5100','10100'],a:1,w:'100 x 101 / 2 = 5050.'},
+{q:'If 3 numbers in AP have sum 15, the middle one is',o:['3','5','7','15'],a:1,w:'3a = 15, so a = 5.'},
+{q:'A fractional value of n in a(n) = a + (n-1)d means the number',o:['is a term','is NOT a term','is the first term','is the last term'],a:1,w:'Position must be a whole positive number.'},
+{q:'Sum of first 15 multiples of 8 is',o:['960','900','1000','840'],a:0,w:'15/2 [16 + 14x8] = 960.'}
+]});
+
+/* ---------- engine ---------- */
+var cur=0, visited={}, scores={};
+var nav=document.getElementById('nav'), main=document.getElementById('main');
+S.forEach(function(s,i){
+  var b=document.createElement('button'); b.textContent=s.title;
+  b.onclick=function(){go(i)}; nav.appendChild(b);
+});
+
+function go(i){
+  cur=i; visited[i]=1;
+  var s=S[i], h='';
+  s.learn.forEach(function(c){h+=c});
+  h+='<div class="card qz"><h2>Quiz time: '+s.title+'</h2><p class="score" id="sc'+i+'"></p>';
+  s.quiz.forEach(function(q,qi){
+    h+='<div class="qq" data-q="'+qi+'"><b>Q'+(qi+1)+'. '+q.q+'</b>';
+    q.o.forEach(function(o,oi){h+='<button class="opt" data-o="'+oi+'">'+o+'</button>'});
+    h+='<div class="why">'+q.w+'</div></div>';
+  });
+  h+='</div><div class="foot"><button class="btn" id="pv">&#9664; Previous</button><button class="btn" id="nx">Next &#9654;</button></div>';
+  main.innerHTML=h;
+  scores[i]=scores[i]||{done:0,right:0};
+  main.querySelectorAll('.opt').forEach(function(btn){
+    btn.onclick=function(){answer(i,btn)};
+  });
+  document.getElementById('pv').disabled=(i===0);
+  document.getElementById('nx').disabled=(i===S.length-1);
+  document.getElementById('pv').onclick=function(){go(cur-1)};
+  document.getElementById('nx').onclick=function(){go(cur+1)};
+  initWidgets();
+  [].forEach.call(nav.children,function(b,k){b.classList.toggle('on',k===i)});
+  document.querySelector('#bar div').style.width=(Object.keys(visited).length/S.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function answer(si,btn){
+  var qq=btn.parentNode;
+  if(qq.dataset.done)return;
+  qq.dataset.done=1;
+  var q=S[si].quiz[+qq.dataset.q], pick=+btn.dataset.o;
+  qq.querySelectorAll('.opt').forEach(function(o){
+    if(+o.dataset.o===q.a)o.classList.add('ok');
+  });
+  if(pick!==q.a)btn.classList.add('bad');
+  else scores[si].right++;
+  scores[si].done++;
+  qq.querySelector('.why').style.display='block';
+  var n=S[si].quiz.length;
+  document.getElementById('sc'+si).textContent='Score: '+scores[si].right+' / '+n+
+    (scores[si].done===n?(scores[si].right===n?'  \u2013 Perfect! \uD83C\uDF89':'  \u2013 Done! Revise the wrong ones.'):'');
+}
+
+/* ---------- widgets ---------- */
+function initWidgets(){
+  main.querySelectorAll('.w').forEach(function(w){
+    var t=w.dataset.w;
+    if(t==='builder'){
+      w.innerHTML='<div class="row">First term a: <input type="range" id="ba" min="-10" max="20" value="3"> <b id="bav">3</b></div>'+
+      '<div class="row">Common difference d: <input type="range" id="bd" min="-10" max="10" value="4"> <b id="bdv">4</b></div>'+
+      '<div class="row" id="bout"></div><div class="out" id="btxt"></div>';
+      var draw=function(){
+        var a=+document.getElementById('ba').value,d=+document.getElementById('bd').value;
+        document.getElementById('bav').textContent=a;document.getElementById('bdv').textContent=d;
+        var h='';
+        for(var i=0;i<7;i++){
+          h+='<div class="box" style="animation-delay:'+(i*0.08)+'s">'+(a+i*d)+'</div>';
+          if(i<6)h+='<div class="arrow" style="animation-delay:'+(i*0.08)+'s">'+(d>=0?'+':'')+d+'</div>';
+        }
+        document.getElementById('bout').innerHTML=h;
+        document.getElementById('btxt').innerHTML='AP: '+a+', '+(a+d)+', '+(a+2*d)+', ... &nbsp; This AP is <b>'+(d>0?'increasing':d<0?'decreasing':'constant')+'</b>.';
+      };
+      document.getElementById('ba').oninput=draw;document.getElementById('bd').oninput=draw;draw();
+    }
+    if(t==='gauss'){
+      w.innerHTML='<button class="btn" id="gb">Show Gauss\'s trick &#9654;</button><div id="gout"></div><div class="out" id="gtxt"></div>';
+      document.getElementById('gb').onclick=function(){
+        var o=document.getElementById('gout'),tx=document.getElementById('gtxt'),i=1;
+        o.innerHTML='';tx.innerHTML='Write 1 to 100 and pair the first with the last, second with second-last...';
+        var iv=setInterval(function(){
+          if(i<=5){o.innerHTML+='<span class="pair">'+i+' + '+(101-i)+' = 101</span>';i++;}
+          else{
+            clearInterval(iv);
+            o.innerHTML+='<span class="pair">... and so on ...</span><span class="pair">50 + 51 = 101</span>';
+            tx.innerHTML='Every pair gives <b>101</b>. There are <b>50 pairs</b>.<br>Sum = 50 &times; 101 = <b>5050</b> \uD83C\uDF89';
+          }
+        },700);
+      };
+    }
+  });
+}
+function chkAP(){
+  var v=document.getElementById('chk').value.split(',').map(Number),o=document.getElementById('chkout');
+  if(v.length<3||v.some(isNaN)){o.textContent='Please enter at least 3 numbers separated by commas.';return;}
+  var ds=[],i;for(i=1;i<v.length;i++)ds.push(+(v[i]-v[i-1]).toFixed(6));
+  var ok=ds.every(function(x){return x===ds[0]});
+  o.innerHTML='Differences: '+ds.join(', ')+'<br><b>'+(ok?'Yes, it is an AP with d = '+ds[0]:'No, it is not an AP (differences are not equal)')+'</b>';
+}
+function calcN(){
+  var a=+document.getElementById('ca').value,d=+document.getElementById('cd').value,n=+document.getElementById('cn').value;
+  document.getElementById('cout').innerHTML='a<sub>'+n+'</sub> = '+a+' + ('+n+' &minus; 1) &times; ('+d+') = '+a+' + '+(n-1)+' &times; ('+d+') = <b>'+(a+(n-1)*d)+'</b>';
+}
+function calcT(){
+  var a=+document.getElementById('ca').value,d=+document.getElementById('cd').value,x=+document.getElementById('cx').value;
+  var o=document.getElementById('cout');
+  if(d===0){o.textContent=(x===a)?'Every term equals '+a+', so yes.':'No, all terms are '+a+'.';return;}
+  var n=(x-a)/d+1;
+  o.innerHTML='n = ('+x+' &minus; '+a+')/'+d+' + 1 = '+(+n.toFixed(4))+'<br><b>'+((Number.isInteger(n)&&n>0)?'Yes, '+x+' is the '+n+'th term.':'No, n is not a whole positive number, so '+x+' is NOT a term.')+'</b>';
+}
+
+go(0);
+</script>
+</body>
+</html>
